@@ -462,7 +462,7 @@ linux-docker-release:
 	@$(GREEN)Successful. Output is in 'dist_docker' folder.$(DONE)
 
 macos-release:
-	fastforge package --platform macos --targets dmg,pkg $(DISTRIBUTOR_ARGS)
+	fastforge package --platform macos --targets dmg $(DISTRIBUTOR_ARGS)
 
 ios-release: #not tested
 	fastforge package --platform ios --targets ipa --build-export-options-plist  ios/exportOptions.plist $(DISTRIBUTOR_ARGS)
