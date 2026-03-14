@@ -8,17 +8,17 @@
 # - Successful builds do not guarantee runtime stability on Red Hat-based systems.
 
 
-# display_name: Hiddify
-# url: https://github.com/hiddify/hiddify-app
+# display_name: NexTunnel
+# url: https://github.com/ivaldepablo/nextunnel-app
 # license: Other
 
-# packager: hiddify
-# packagerEmail: linux@hiddify.com
+# packager: nextunnel
+# packagerEmail: support@nextunnel.com
 
 # icon: assets/images/source/ic_launcher_border.png
 
 # keywords:
-#   - Hiddify
+#   - NexTunnel
 #   - Proxy
 #   - VPN
 #   - V2ray
@@ -27,7 +27,7 @@
 #   - Psiphon
 #   - OpenVPN
 
-# generic_name: Hiddify
+# generic_name: NexTunnel
 
 # requires:
 #   - libayatana-appindicator-gtk3

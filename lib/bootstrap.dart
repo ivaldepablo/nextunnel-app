@@ -87,7 +87,7 @@ Future<void> lazyBootstrap(WidgetsBinding widgetsBinding, Environment env) async
   await _init("translations", () => container.read(translationsProvider.future));
 
   await _safeInit("active profile", () => container.read(activeProfileProvider.future), timeout: 1000);
-  await _init("hiddify-core", () => container.read(hiddifyCoreServiceProvider).init());
+  await _init("nextunnel-core", () => container.read(hiddifyCoreServiceProvider).init());
 
   if (!kIsWeb) {
     // await _safeInit(

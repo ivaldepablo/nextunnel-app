@@ -8,8 +8,21 @@ class AppTheme {
   final AppThemeMode mode;
   final String fontFamily;
 
+  // NexTunnel brand colors
+  static const _nexPrimary = Color(0xFF6366f1); // indigo
+  static const _nexSecondary = Color(0xFF60a5fa); // blue
+  static const _nexError = Color(0xFFef4444); // red
+  static const _nexSurface = Color(0xFF18181b); // dark card surface
+  static const _nexBackground = Color(0xFF0a0a0a); // very dark background
+  static const _nexText = Color(0xFFededed); // light gray text
+
   ThemeData lightTheme(ColorScheme? lightColorScheme) {
-    final ColorScheme scheme = lightColorScheme ?? ColorScheme.fromSeed(seedColor: const Color(0xFF293CA0));
+    final ColorScheme scheme = lightColorScheme ??
+        ColorScheme.fromSeed(
+          seedColor: _nexPrimary,
+          secondary: _nexSecondary,
+          error: _nexError,
+        );
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
@@ -19,12 +32,19 @@ class AppTheme {
   }
 
   ThemeData darkTheme(ColorScheme? darkColorScheme) {
-    final ColorScheme scheme =
-        darkColorScheme ?? ColorScheme.fromSeed(seedColor: const Color(0xFF293CA0), brightness: Brightness.dark);
+    final ColorScheme scheme = darkColorScheme ??
+        ColorScheme.fromSeed(
+          seedColor: _nexPrimary,
+          brightness: Brightness.dark,
+          secondary: _nexSecondary,
+          error: _nexError,
+          surface: _nexSurface,
+          onSurface: _nexText,
+        );
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
-      scaffoldBackgroundColor: mode.trueBlack ? Colors.black : scheme.background,
+      scaffoldBackgroundColor: mode.trueBlack ? _nexBackground : scheme.surface,
       fontFamily: fontFamily,
       extensions: const <ThemeExtension<dynamic>>{ConnectionButtonTheme.light},
     );

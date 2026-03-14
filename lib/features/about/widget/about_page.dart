@@ -94,7 +94,7 @@ class AboutPage extends HookConsumerWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(t.common.appTitle, style: Theme.of(context).textTheme.titleLarge),
+                      Text("${t.common.appTitle} VPN", style: Theme.of(context).textTheme.titleLarge),
                       const Gap(4),
                       Text("${t.common.version} ${appInfo.presentVersion}"),
                     ],
@@ -103,10 +103,30 @@ class AboutPage extends HookConsumerWidget {
               ),
             ),
           ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                "Secure, fast, and private VPN powered by VLESS+Reality",
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
           SliverList(
             delegate: SliverChildListDelegate([
               ...conditionalTiles,
               if (conditionalTiles.isNotEmpty) const Divider(),
+              ListTile(
+                title: const Text("Website"),
+                subtitle: const Text("https://nextunnel.com"),
+                trailing: const Icon(FluentIcons.open_24_regular),
+                onTap: () async {
+                  await UriUtils.tryLaunch(Uri.parse("https://nextunnel.com"));
+                },
+              ),
               ListTile(
                 title: Text(t.pages.about.sourceCode),
                 trailing: const Icon(FluentIcons.open_24_regular),
@@ -115,10 +135,11 @@ class AboutPage extends HookConsumerWidget {
                 },
               ),
               ListTile(
-                title: Text(t.pages.about.telegramChannel),
+                title: const Text("Support"),
+                subtitle: const Text("support@nextunnel.com"),
                 trailing: const Icon(FluentIcons.open_24_regular),
                 onTap: () async {
-                  await UriUtils.tryLaunch(Uri.parse(Constants.telegramChannelUrl));
+                  await UriUtils.tryLaunch(Uri.parse("mailto:support@nextunnel.com"));
                 },
               ),
               ListTile(

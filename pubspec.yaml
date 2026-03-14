@@ -196,7 +196,7 @@ flutter_native_splash:
 
 ffigen:
   name: "HiddifyCoreNativeLibrary"
-  description: "Bindings to Hiddify Core Library"
+  description: "Bindings to NexTunnel Core Library"
   output: "lib/gen/hiddify_core_generated_bindings.dart"
   headers:
     entry-points:
