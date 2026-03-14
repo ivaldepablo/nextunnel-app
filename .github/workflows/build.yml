@@ -93,7 +93,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Import Apple Codesign Certificates
-        if: ${{ inputs.upload-artifact && startsWith(matrix.os,'macos') && secrets.APPLE_CERTIFICATE_P12 != '' }}
+        if: ${{ inputs.upload-artifact && startsWith(matrix.os,'macos') }}
         continue-on-error: true
         uses: apple-actions/import-codesign-certs@v6
         with:
@@ -101,7 +101,7 @@ jobs:
             p12-password: "${{ secrets.APPLE_CERTIFICATE_P12_PASSWORD }}"
 
       - name: Import Apple Mobile Provisioning Profile
-        if: ${{ inputs.upload-artifact && startsWith(matrix.os,'macos') && secrets.APPLE_MOBILE_PROVISIONING_PROFILES_TARGZ_BASE64 != '' }}
+        if: ${{ inputs.upload-artifact && startsWith(matrix.os,'macos') }}
         continue-on-error: true
         run: |
            mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
@@ -193,7 +193,7 @@ jobs:
           echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
 
       - name: Setup Android Signing Properties
-        if: ${{ inputs.upload-artifact && startsWith(matrix.platform,'android') && secrets.ANDROID_SIGNING_KEY != '' }}
+        if: ${{ inputs.upload-artifact && startsWith(matrix.platform,'android') }}
         continue-on-error: true
         run: |
           echo "${{ secrets.ANDROID_SIGNING_KEY }}" | base64 --decode > android/key.jks
@@ -203,7 +203,7 @@ jobs:
           echo "keyAlias=${{ secrets.ANDROID_SIGNING_KEY_ALIAS }}" >> android/key.properties
 
       - name: Setup Windows Signing Properties
-        if: ${{ inputs.upload-artifact && startsWith(matrix.platform,'windows') && secrets.WINDOWS_SIGNING_KEY != '' }}
+        if: ${{ inputs.upload-artifact && startsWith(matrix.platform,'windows') }}
         continue-on-error: true
         run: |
             [IO.File]::WriteAllBytes("windows\sign.pfx", [Convert]::FromBase64String("${{ secrets.WINDOWS_SIGNING_KEY }}"))
@@ -232,7 +232,7 @@ jobs:
           make ${{ matrix.platform }}-release
 
       - name: Code Sign
-        if: ${{ inputs.upload-artifact && startsWith(matrix.platform,'windows') && secrets.WINDOWS_SIGNING_KEY != '' }}
+        if: ${{ inputs.upload-artifact && startsWith(matrix.platform,'windows') }}
         continue-on-error: true
         uses: hiddify/signtool-code-sign-sha256@main
         with:
@@ -266,7 +266,7 @@ jobs:
           Get-ChildItem -Path out
           
       - name: Upload Debug Symbols
-        if: ${{ inputs.upload-artifact && inputs.tag-name != 'draft' && secrets.SENTRY_AUTH_TOKEN != '' }}
+        if: ${{ inputs.upload-artifact && inputs.tag-name != 'draft' }}
         continue-on-error: true
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
