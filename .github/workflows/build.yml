@@ -231,7 +231,62 @@ jobs:
         run: |
           make ${{ matrix.platform }}-release
 
-      - name: Code Sign
+      - name: Ad-hoc Sign macOS and Re-create DMG
+        if: startsWith(matrix.platform,'macos')
+        continue-on-error: true
+        run: |
+          echo "=== Finding .app in dist ==="
+          APP_PATH=$(find dist -name "*.app" -type d | head -1)
+          echo "App found: $APP_PATH"
+
+          if [ -n "$APP_PATH" ]; then
+            echo "=== Ad-hoc signing $APP_PATH ==="
+            # Sign all nested binaries first
+            find "$APP_PATH/Contents" -type f \( -name "*.dylib" -o -perm +111 \) | while read f; do
+              codesign --force --sign - "$f" 2>/dev/null || true
+            done
+            # Sign frameworks
+            find "$APP_PATH/Contents/Frameworks" -name "*.framework" -type d 2>/dev/null | while read f; do
+              codesign --force --deep --sign - "$f" 2>/dev/null || true
+            done
+            # Sign the main bundle
+            codesign --force --deep --sign - "$APP_PATH"
+            echo "=== Verify signature ==="
+            codesign -dv "$APP_PATH" 2>&1 || true
+
+            echo "=== Re-creating DMG with signed app ==="
+            OLD_DMG=$(find dist -name "*.dmg" | head -1)
+            if [ -n "$OLD_DMG" ]; then
+              DMG_DIR=$(dirname "$APP_PATH")
+              rm -f "$OLD_DMG"
+              cp macos/packaging/dmg/background.png "$DMG_DIR/background.png"
+
+              # Create appdmg config JSON
+              cat > "$DMG_DIR/config.json" << 'DMGCFG'
+          {
+            "title": "NexTunnelVPN",
+            "background": "background.png",
+            "window": { "size": { "width": 600, "height": 400 } },
+            "contents": [
+              { "x": 440, "y": 230, "type": "link", "path": "/Applications" },
+              { "x": 160, "y": 230, "type": "file", "path": "NexTunnelVPN.app" }
+            ]
+          }
+          DMGCFG
+
+              # Rename app if needed
+              APP_NAME=$(basename "$APP_PATH")
+              if [ "$APP_NAME" != "NexTunnelVPN.app" ]; then
+                mv "$APP_PATH" "$DMG_DIR/NexTunnelVPN.app"
+              fi
+
+              appdmg "$DMG_DIR/config.json" "$OLD_DMG"
+              echo "=== DMG re-created with signed app ==="
+              ls -la "$OLD_DMG"
+            fi
+          fi
+
+      - name: Code Sign Windows
         if: ${{ inputs.upload-artifact && startsWith(matrix.platform,'windows') }}
         continue-on-error: true
         uses: hiddify/signtool-code-sign-sha256@main
@@ -242,7 +297,7 @@ jobs:
           folder: 'dist'
           timestamp-server: 'http://timestamp.digicert.com'
           recursive: true
-          description: 'NexTunnel'
+          description: 'NexTunnelVPN'
 
       - name: Copy to out Windows
         if: matrix.platform == 'windows'
