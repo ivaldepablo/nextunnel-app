@@ -462,7 +462,10 @@ linux-docker-release:
 	@$(GREEN)Successful. Output is in 'dist_docker' folder.$(DONE)
 
 macos-release:
-	fastforge package --platform macos --targets dmg $(DISTRIBUTOR_ARGS)
+	flutter build macos --release
+	@echo "=== Ad-hoc signing NexTunnelVPN.app ==="
+	codesign --force --deep --sign - build/macos/Build/Products/Release/NexTunnelVPN.app || codesign --force --deep --sign - build/macos/Build/Products/Release/*.app || echo "Codesign skipped"
+	fastforge package --platform macos --targets dmg --skip-clean $(DISTRIBUTOR_ARGS)
 
 ios-release: #not tested
 	fastforge package --platform ios --targets ipa --build-export-options-plist  ios/exportOptions.plist $(DISTRIBUTOR_ARGS)

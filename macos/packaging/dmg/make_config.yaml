@@ -1,4 +1,4 @@
-title: NexTunnel
+title: NexTunnelVPN
 background: "background.png"
 window:
   size:
@@ -12,4 +12,4 @@ contents:
   - x: 160
     y: 230
     type: file
-    path: NexTunnel.app
+    path: NexTunnelVPN.app
