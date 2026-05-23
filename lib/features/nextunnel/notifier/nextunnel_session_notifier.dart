@@ -49,6 +49,30 @@ class NexTunnelSession extends _$NexTunnelSession with InfraLogger {
     }
   }
 
+  Future<void> signup({
+    required String name,
+    required String email,
+    required String password,
+    String? locale,
+  }) async {
+    state = const AsyncLoading();
+    try {
+      final session = await ref.read(nexTunnelApiProvider).signup(
+            name: name,
+            email: email,
+            password: password,
+            locale: locale,
+          );
+      await ref.read(sessionRepositoryProvider).write(session);
+      state = AsyncData(session);
+      loggy.info("signup OK for $email");
+    } catch (e, st) {
+      loggy.warning("signup failed for $email: $e");
+      state = AsyncError(e, st);
+      rethrow;
+    }
+  }
+
   Future<void> logout() async {
     await ref.read(sessionRepositoryProvider).clear();
     state = const AsyncData(null);

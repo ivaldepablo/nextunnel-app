@@ -18,6 +18,51 @@ class NexTunnelApi with InfraLogger {
 
   NexTunnelApi({required Dio dio}) : _dio = dio;
 
+  /// Sign up a new account (with 3-day auto-trial). Returns an AuthSession.
+  Future<AuthSession> signup({
+    required String name,
+    required String email,
+    required String password,
+    String? locale,
+  }) async {
+    try {
+      final res = await _dio.post(
+        "${Constants.apiBaseUrl}/api/client/signup",
+        data: {
+          "name": name,
+          "email": email,
+          "password": password,
+          if (locale != null) "locale": locale,
+        },
+        options: Options(
+          headers: {"Content-Type": "application/json", "X-Client": "nextunnel-app"},
+          validateStatus: (s) => s != null && s < 500,
+        ),
+      );
+
+      if (res.statusCode == 200 && res.data is Map<String, dynamic>) {
+        final data = res.data as Map<String, dynamic>;
+        return AuthSession(
+          userId: data["userId"] as String,
+          email: data["email"] as String,
+          sessionToken: data["sessionToken"] as String,
+          subscriptionToken: data["subscriptionToken"] as String,
+          planName: data["planName"] as String?,
+          planExpiresAt: data["planExpiresAt"] != null
+              ? DateTime.parse(data["planExpiresAt"] as String)
+              : null,
+          createdAt: DateTime.now(),
+        );
+      }
+
+      final body = res.data;
+      final msg = body is Map<String, dynamic> ? (body["error"]?.toString() ?? "signup_failed") : "signup_failed";
+      throw NexTunnelApiException(msg, statusCode: res.statusCode);
+    } on DioException catch (e) {
+      throw NexTunnelApiException(e.message ?? "network_error", statusCode: e.response?.statusCode);
+    }
+  }
+
   /// Login with email + password. Returns the AuthSession or throws.
   /// Maps to POST /api/auth/callback/credentials (NextAuth) or
   /// POST /api/client/login (custom — currently planned).
