@@ -1,15 +1,15 @@
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
-import 'package:hiddify/core/haptic/haptic_service.dart';
-import 'package:hiddify/core/localization/translations.dart';
-import 'package:hiddify/core/preferences/general_preferences.dart';
-import 'package:hiddify/core/router/dialog/dialog_notifier.dart';
-import 'package:hiddify/features/auto_start/notifier/auto_start_notifier.dart';
-import 'package:hiddify/features/common/general_pref_tiles.dart';
-import 'package:hiddify/features/log/model/log_level.dart';
-import 'package:hiddify/features/settings/data/config_option_repository.dart';
-import 'package:hiddify/features/settings/widget/preference_tile.dart';
-import 'package:hiddify/utils/utils.dart';
+import 'package:nextunnel_app/core/haptic/haptic_service.dart';
+import 'package:nextunnel_app/core/localization/translations.dart';
+import 'package:nextunnel_app/core/preferences/general_preferences.dart';
+import 'package:nextunnel_app/core/router/dialog/dialog_notifier.dart';
+import 'package:nextunnel_app/features/auto_start/notifier/auto_start_notifier.dart';
+import 'package:nextunnel_app/features/common/general_pref_tiles.dart';
+import 'package:nextunnel_app/features/log/model/log_level.dart';
+import 'package:nextunnel_app/features/settings/data/config_option_repository.dart';
+import 'package:nextunnel_app/features/settings/widget/preference_tile.dart';
+import 'package:nextunnel_app/utils/utils.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:humanizer/humanizer.dart';
 

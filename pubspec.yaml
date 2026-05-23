@@ -1,7 +1,7 @@
-name: hiddify
-description: Cross Platform Multi Protocol Proxy Frontend.
+name: nextunnel_app
+description: NexTunnel — multi-protocol VPN client with emergency DNS-tunnel mode.
 publish_to: "none"
-version: 4.1.1+40101
+version: 1.0.0+10000
 
 environment:
   sdk: ^3.10.4

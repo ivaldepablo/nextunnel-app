@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
-import 'package:hiddify/core/localization/translations.dart';
-import 'package:hiddify/core/model/constants.dart';
-import 'package:hiddify/core/router/dialog/dialog_notifier.dart';
-import 'package:hiddify/features/profile/add/widgets/widgets.dart';
-import 'package:hiddify/features/profile/notifier/profile_notifier.dart';
-import 'package:hiddify/utils/utils.dart';
+import 'package:nextunnel_app/core/localization/translations.dart';
+import 'package:nextunnel_app/core/model/constants.dart';
+import 'package:nextunnel_app/core/router/dialog/dialog_notifier.dart';
+import 'package:nextunnel_app/features/profile/add/widgets/widgets.dart';
+import 'package:nextunnel_app/features/profile/notifier/profile_notifier.dart';
+import 'package:nextunnel_app/utils/utils.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class FixBtns extends ConsumerWidget {

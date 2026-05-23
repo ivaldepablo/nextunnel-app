@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hiddify/core/localization/translations.dart';
-import 'package:hiddify/features/proxy/active/ip_widget.dart';
-import 'package:hiddify/utils/custom_loggers.dart';
+import 'package:nextunnel_app/core/localization/translations.dart';
+import 'package:nextunnel_app/features/proxy/active/ip_widget.dart';
+import 'package:nextunnel_app/utils/custom_loggers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class SettingPickerDialog<T> extends HookConsumerWidget with PresLogger {

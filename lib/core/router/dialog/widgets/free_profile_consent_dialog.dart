@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hiddify/core/localization/translations.dart';
-import 'package:hiddify/core/model/constants.dart';
-import 'package:hiddify/utils/utils.dart';
+import 'package:nextunnel_app/core/localization/translations.dart';
+import 'package:nextunnel_app/core/model/constants.dart';
+import 'package:nextunnel_app/utils/utils.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class FreeProfileConsentDialog extends HookConsumerWidget {

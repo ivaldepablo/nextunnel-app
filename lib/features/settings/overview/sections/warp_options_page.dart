@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:hiddify/core/localization/translations.dart';
-import 'package:hiddify/core/model/optional_range.dart';
-import 'package:hiddify/features/settings/data/config_option_repository.dart';
-import 'package:hiddify/features/settings/notifier/warp_option/warp_option_notifier.dart';
-import 'package:hiddify/features/settings/widget/preference_tile.dart';
-import 'package:hiddify/singbox/model/singbox_config_enum.dart';
-import 'package:hiddify/utils/utils.dart';
+import 'package:nextunnel_app/core/localization/translations.dart';
+import 'package:nextunnel_app/core/model/optional_range.dart';
+import 'package:nextunnel_app/features/settings/data/config_option_repository.dart';
+import 'package:nextunnel_app/features/settings/notifier/warp_option/warp_option_notifier.dart';
+import 'package:nextunnel_app/features/settings/widget/preference_tile.dart';
+import 'package:nextunnel_app/singbox/model/singbox_config_enum.dart';
+import 'package:nextunnel_app/utils/utils.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class WarpOptionsPage extends HookConsumerWidget {

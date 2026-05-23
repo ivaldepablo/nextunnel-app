@@ -1,7 +1,7 @@
-import 'package:hiddify/features/profile/data/profile_data_mapper.dart';
-import 'package:hiddify/features/profile/data/profile_data_providers.dart';
-import 'package:hiddify/features/profile/model/profile_entity.dart';
-import 'package:hiddify/utils/utils.dart';
+import 'package:nextunnel_app/features/profile/data/profile_data_mapper.dart';
+import 'package:nextunnel_app/features/profile/data/profile_data_providers.dart';
+import 'package:nextunnel_app/features/profile/model/profile_entity.dart';
+import 'package:nextunnel_app/utils/utils.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
