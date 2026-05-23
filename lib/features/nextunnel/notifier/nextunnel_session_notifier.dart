@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nextunnel_app/core/preferences/preferences_provider.dart';
+import 'package:nextunnel_app/features/nextunnel/data/dnstun_client_controller.dart';
 import 'package:nextunnel_app/features/nextunnel/data/nextunnel_api.dart';
 import 'package:nextunnel_app/features/nextunnel/data/session_repository.dart';
 import 'package:nextunnel_app/features/nextunnel/model/auth_session.dart';
@@ -17,6 +18,13 @@ NexTunnelApi nexTunnelApi(Ref ref) {
 @Riverpod(keepAlive: true)
 SessionRepository sessionRepository(Ref ref) {
   return SessionRepository(ref.watch(sharedPreferencesProvider).requireValue);
+}
+
+@Riverpod(keepAlive: true)
+DnsTunnelClientController dnsTunnelClient(Ref ref) {
+  final controller = DnsTunnelClientController();
+  ref.onDispose(() => controller.stop());
+  return controller;
 }
 
 @Riverpod(keepAlive: true)

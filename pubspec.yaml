@@ -169,6 +169,11 @@ flutter:
     - assets/images/disconnect_norouz.PNG
     - assets/images/world_map.png
     - assets/images/source/ic_launcher_border.png
+    # MasterDnsVPN bundled client binaries (emergency DNS-tunnel mode)
+    - assets/binaries/linux-amd64/masterdns-client
+    - assets/binaries/windows-amd64/masterdns-client.exe
+    - assets/binaries/macos-amd64/masterdns-client
+    - assets/binaries/macos-arm64/masterdns-client
 
   fonts:
     - family: Shabnam
