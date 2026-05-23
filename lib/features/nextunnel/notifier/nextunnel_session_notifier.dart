@@ -22,10 +22,58 @@ SessionRepository sessionRepository(Ref ref) {
 }
 
 @Riverpod(keepAlive: true)
-DnsTunnelClientController dnsTunnelClient(Ref ref) {
+DnsTunnelClientController _dnsTunnelClientController(Ref ref) {
   final controller = DnsTunnelClientController();
   ref.onDispose(() => controller.stop());
   return controller;
+}
+
+enum DnsTunnelStatus { idle, starting, running, stopping, error }
+
+@Riverpod(keepAlive: true)
+class DnsTunnelClient extends _$DnsTunnelClient with InfraLogger {
+  @override
+  DnsTunnelStatus build() => DnsTunnelStatus.idle;
+
+  Future<void> start({
+    required String domain,
+    required String encryptionKey,
+    required List<String> resolvers,
+  }) async {
+    final ctrl = ref.read(_dnsTunnelClientControllerProvider);
+    state = DnsTunnelStatus.starting;
+    try {
+      await ctrl.extractIfNeeded();
+      await ctrl.writeConfig(_buildEntry(domain, encryptionKey, resolvers));
+      await ctrl.start();
+      state = DnsTunnelStatus.running;
+      loggy.info("dnstun tunnel started → $domain");
+    } catch (e) {
+      loggy.warning("dnstun start failed: $e");
+      state = DnsTunnelStatus.error;
+    }
+  }
+
+  Future<void> stop() async {
+    final ctrl = ref.read(_dnsTunnelClientControllerProvider);
+    state = DnsTunnelStatus.stopping;
+    try {
+      await ctrl.stop();
+    } finally {
+      state = DnsTunnelStatus.idle;
+    }
+  }
+
+  DnsTunnelEntry _buildEntry(String domain, String key, List<String> resolvers) =>
+      DnsTunnelEntry(
+        serverName: domain.split(".").firstWhere(
+            (p) => p != "dns" && p != "nextunnel" && p != "com",
+            orElse: () => "server"),
+        country: "",
+        dnsDomain: domain,
+        encryptionKey: key,
+        resolvers: resolvers,
+      );
 }
 
 @Riverpod(keepAlive: true)

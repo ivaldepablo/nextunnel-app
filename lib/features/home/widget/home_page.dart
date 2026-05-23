@@ -7,6 +7,7 @@ import 'package:nextunnel_app/core/router/bottom_sheets/bottom_sheets_notifier.d
 import 'package:nextunnel_app/features/home/widget/connection_button.dart';
 import 'package:nextunnel_app/features/profile/notifier/active_profile_notifier.dart';
 import 'package:nextunnel_app/features/profile/widget/profile_tile.dart';
+import 'package:nextunnel_app/features/nextunnel/widget/nextunnel_status_banner.dart';
 import 'package:nextunnel_app/features/proxy/active/active_proxy_card.dart';
 import 'package:nextunnel_app/features/proxy/active/active_proxy_delay_indicator.dart';
 import 'package:nextunnel_app/gen/assets.gen.dart';
@@ -106,6 +107,7 @@ class HomePage extends HookConsumerWidget {
                   slivers: [
                     // switch (activeProfile) {
                     // AsyncData(value: final profile?) =>
+                    const SliverToBoxAdapter(child: NexTunnelStatusBanner()),
                     MultiSliver(
                       children: [
                         // const Gap(100),
