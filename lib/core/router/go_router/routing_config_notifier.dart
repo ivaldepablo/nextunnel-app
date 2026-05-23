@@ -9,6 +9,8 @@ import 'package:nextunnel_app/core/router/go_router/refresh_listenable.dart';
 import 'package:nextunnel_app/features/about/widget/about_page.dart';
 import 'package:nextunnel_app/features/home/widget/home_page.dart';
 import 'package:nextunnel_app/features/intro/widget/intro_page.dart';
+import 'package:nextunnel_app/features/nextunnel/notifier/nextunnel_session_notifier.dart';
+import 'package:nextunnel_app/features/nextunnel/widget/login_screen.dart';
 import 'package:nextunnel_app/features/log/overview/logs_page.dart';
 import 'package:nextunnel_app/features/per_app_proxy/overview/per_app_proxy_page.dart';
 import 'package:nextunnel_app/features/profile/details/profile_details_page.dart';
@@ -63,6 +65,19 @@ class RoutingConfigNotifier extends _$RoutingConfigNotifier {
     if (isMobileBreakpoint == null) return loadingConfig;
     return RoutingConfig(
       redirect: (context, state) {
+        // NexTunnel: require login before reaching the main app
+        final sessionAsync = ref.read(nexTunnelSessionProvider);
+        final hasSession = sessionAsync.maybeWhen(
+          data: (s) => s != null,
+          orElse: () => false,
+        );
+        final isLogin = state.matchedLocation == '/login';
+        if (!hasSession && !isLogin) {
+          return '/login';
+        }
+        if (hasSession && isLogin) {
+          return '/home';
+        }
         final introCompleted = ref.read(Preferences.introCompleted);
         final isIntro = state.matchedLocation == '/intro';
         // fix path-parameters for deep link
@@ -247,6 +262,7 @@ class RoutingConfigNotifier extends _$RoutingConfigNotifier {
           ],
         ),
         GoRoute(name: 'intro', path: '/intro', builder: (_, _) => const IntroPage()),
+        GoRoute(name: 'login', path: '/login', builder: (_, _) => const LoginScreen()),
       ],
     );
   }
