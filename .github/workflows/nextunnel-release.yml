@@ -1,13 +1,10 @@
 name: NexTunnel release (unsigned)
 
-# Builds and publishes unsigned binaries for the NexTunnel native app.
-# Trigger:
-#   - push a tag like nextunnel-v1.0.0 → uploads to a GitHub Release
-#   - manual workflow_dispatch → builds artifacts only (for testing)
-#
-# Why unsigned: per Pablo's "no plata adicional" constraint, we don't pay
-# for Apple Developer ($99/yr) or Microsoft Authenticode certs ($200-500/yr).
-# First-launch warnings are documented on /downloads.
+# Builds unsigned binaries for the NexTunnel native app.
+# Tag nextunnel-v* → publishes a GitHub Release.
+# workflow_dispatch → builds artifacts only.
+# No Apple/Microsoft certs (Pablo's "no plata adicional"); users see a
+# one-time Gatekeeper/SmartScreen warning.
 
 on:
   push:
@@ -25,24 +22,34 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-macos:
-    runs-on: macos-14
+  build-android:
+    runs-on: ubuntu-22.04
     env:
       VERSION_ARG: ${{ github.event.inputs.version || github.ref_name }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.41.4'
           channel: 'stable'
-      - name: Build
-        run: bash scripts/build-unsigned.sh "$VERSION_ARG"
+      - name: Prepare hiddify-core libs (downloads prebuilt .so)
+        run: make android-prepare
+      - name: Build APK
+        run: |
+          mkdir -p dist
+          flutter build apk --release --no-tree-shake-icons
+          cp build/app/outputs/flutter-apk/app-release.apk "dist/NexTunnel-${VERSION_ARG}-android.apk"
+          cd dist && shasum -a 256 *.apk > checksums-android.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: macos
+          name: android
           path: dist/
 
-  build-linux-android:
+  build-linux:
     runs-on: ubuntu-22.04
     env:
       VERSION_ARG: ${{ github.event.inputs.version || github.ref_name }}
@@ -52,19 +59,23 @@ jobs:
         with:
           flutter-version: '3.41.4'
           channel: 'stable'
-      - uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-      - name: Install deps
+      - name: Install Linux build deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y ninja-build libgtk-3-dev
-      - name: Build
-        run: bash scripts/build-unsigned.sh "$VERSION_ARG"
+          sudo apt-get install -y ninja-build libgtk-3-dev libcurl4-openssl-dev libsecret-1-dev libjsoncpp-dev
+      - name: Prepare hiddify-core libs (Linux amd64)
+        run: make linux-amd64-prepare
+      - name: Build Linux bundle
+        run: |
+          mkdir -p dist
+          flutter build linux --release
+          pushd build/linux/x64/release/bundle >/dev/null
+          tar -czf "../../../../../dist/NexTunnel-${VERSION_ARG}-linux-x64.tar.gz" .
+          popd >/dev/null
+          cd dist && shasum -a 256 *.tar.gz > checksums-linux.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: linux-android
+          name: linux
           path: dist/
 
   build-windows:
@@ -77,16 +88,25 @@ jobs:
         with:
           flutter-version: '3.41.4'
           channel: 'stable'
-      - name: Build
+      - name: Prepare hiddify-core libs (Windows)
         shell: bash
-        run: bash scripts/build-unsigned.sh "$VERSION_ARG"
+        run: make windows-prepare
+      - name: Build Windows
+        shell: bash
+        run: |
+          mkdir -p dist
+          flutter build windows --release
+          pushd build/windows/x64/runner/Release >/dev/null
+          7z a -tzip "../../../../../dist/NexTunnel-${VERSION_ARG}-windows-x64.zip" "*"
+          popd >/dev/null
+          cd dist && sha256sum *.zip > checksums-windows.txt
       - uses: actions/upload-artifact@v4
         with:
           name: windows
           path: dist/
 
   release:
-    needs: [build-macos, build-linux-android, build-windows]
+    needs: [build-android, build-linux, build-windows]
     runs-on: ubuntu-22.04
     if: startsWith(github.ref, 'refs/tags/nextunnel-v')
     steps:
@@ -94,6 +114,8 @@ jobs:
         with:
           path: dist
           merge-multiple: true
+      - name: Consolidate checksums
+        run: cd dist && cat checksums-*.txt > checksums.txt && rm checksums-*.txt
       - uses: softprops/action-gh-release@v2
         with:
           files: dist/*
