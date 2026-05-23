@@ -5,6 +5,7 @@ import 'package:nextunnel_app/features/nextunnel/data/dnstun_client_controller.d
 import 'package:nextunnel_app/features/nextunnel/data/nextunnel_api.dart';
 import 'package:nextunnel_app/features/nextunnel/data/session_repository.dart';
 import 'package:nextunnel_app/features/nextunnel/model/auth_session.dart';
+import 'package:nextunnel_app/features/nextunnel/model/config_bundle.dart';
 import 'package:nextunnel_app/utils/custom_loggers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -53,3 +54,18 @@ class NexTunnelSession extends _$NexTunnelSession with InfraLogger {
     state = const AsyncData(null);
   }
 }
+
+/// Fetches the auto-config bundle (sing-box outbounds + DNS tunnel entries)
+/// for the current session. Refreshes every hour while the app is open.
+@Riverpod(keepAlive: true)
+Future<ConfigBundle?> autoConfigBundle(Ref ref) async {
+  final sessionAsync = ref.watch(nexTunnelSessionProvider);
+  final session = sessionAsync.value;
+  if (session == null) return null;
+
+  // Refresh every 1h
+  Future.delayed(const Duration(hours: 1), () => ref.invalidateSelf());
+
+  return ref.read(nexTunnelApiProvider).fetchAutoConfig(sessionToken: session.sessionToken);
+}
+
