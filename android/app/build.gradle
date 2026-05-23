@@ -52,8 +52,11 @@ def flutterVersionCode = localProperties.getProperty('flutter.versionCode')?: '1
 def flutterVersionName = localProperties.getProperty('flutter.versionName') ?: '1.0'
 
 android {
-    namespace 'com.nextunnel.app'
-    testNamespace "test.com.nextunnel.app"
+    // App label is "NexTunnel" (in AndroidManifest); we keep the legacy
+    // com.hiddify.hiddify package id so the 40+ kotlin source files don't
+    // need to be moved. Users only see the label, not the internal id.
+    namespace 'com.hiddify.hiddify'
+    testNamespace "test.com.hiddify.hiddify"
     compileSdkVersion 36
     ndkVersion "28.2.13676358"
 
